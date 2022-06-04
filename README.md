@@ -1,13 +1,20 @@
 
-Randomized Color Palette's generator.  
+Randomized atractive Color Palette's generator.  
 
 - Can be limited by Hue and luminance ranges.  
 - Colors can be sorted by hue, saturation and brightness.
 
-## Screenshot
+```
+_Why does this exist?
+There are lots of clever one-liners for generating random colors:
+Unfortunately, this code naturally produces murky greys, browns and greens.
+randomColor generates attractive colors by default. More specifically, randomColor produces bright colors with a reasonably high saturation. This makes randomColor particularly useful for data visualizations and generative art._
+```
+
+### Screenshot
 ![](readme_images/Capture.PNG)
 
-#### Simply ported from:  
+### Simply ported from:  
 https://github.com/xuboying/randomcolor-cpp 
 
 ### Demos and Sources:  
