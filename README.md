@@ -4,7 +4,7 @@ Randomized atractive Color Palette's generator.
 - Can be limited by Hue and luminance ranges.  
 - Colors can be sorted by hue, saturation and brightness.
 
-Originally taken from [here](https://randomcolor.lllllllllllllllll.com/)
+Originally taken from [here](https://randomcolor.lllllllllllllllll.com/).
 
 
 ### Why does this exist?
