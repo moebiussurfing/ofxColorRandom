@@ -8,14 +8,15 @@ Randomized atractive Color Palette's generator.
 - Can be limited by Hue and luminance ranges.  
 - Colors can be sorted by hue, saturation and brightness.
 
-## Ported from javascript based Random Color 
+### Ported from javascript based Random Color 
 Original Demo [here](https://randomcolor.lllllllllllllllll.com/).
 
 ## Why does this exist?
 _There are lots of clever one-liners for generating random colors:  
 Unfortunately, this code naturally produces murky greys, browns and greens.  
 randomColor generates attractive colors by default.  
-More specifically, randomColor produces bright colors with a reasonably high saturation. This makes randomColor particularly useful for data visualizations and generative art._
+More specifically, randomColor produces bright colors with a reasonably high saturation.  
+This makes randomColor particularly useful for data visualizations and generative art._
 
 ### Simply ported from (C):  
 https://github.com/xuboying/randomcolor-cpp 
@@ -27,7 +28,7 @@ https://github.com/davidmerfield/randomColor
 - [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers) / _Easy to remove. Only for handle settings and GUI theme_.  
 - ofxGui / _oF Core_
 
-## Tested Systems
+### Tested Systems
 - **Windows 10** / **VS 2022** / **oF 0.12**
 
 ## Author/s
