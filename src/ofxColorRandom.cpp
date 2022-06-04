@@ -127,9 +127,6 @@ void ofxColorRandom::setup()
 
 	//--
 
-	//TODO: modify hard-coded when adding modes!
-	index_CallOptions.setMax(1);
-
 	//--------------------------------------------------------------
 	listener_Library = index_CallOptions.newListener([this](int& i)
 		{
@@ -139,11 +136,17 @@ void ofxColorRandom::setup()
 
 			switch (index_CallOptions)
 			{
-			case 0: name_CallOptions = "ColorGeneratorDeuteranopia"; break;
-			case 1: name_CallOptions = "ColorGeneratorNormal"; break;
-				//.. add more here
+			case 0: name_CallOptions = "Deuteranopia"; break;
+			case 1: name_CallOptions = "Normal"; break;
+			case 2: name_CallOptions = "TEST"; break;
+				
+			//.. add more here
 			}
 		});
+
+	//TODO: modify hard-coded when adding modes!
+	index_CallOptions.setMin(0);
+	index_CallOptions.setMax(2);
 
 	//----
 
@@ -215,14 +218,19 @@ void ofxColorRandom::keyPressed(ofKeyEventArgs& eventArgs)
 		getPaletteType();
 	}
 
-	else if (key == '1')
+	else if (key == '0')
 	{
 		getPaletteType(0);
 	}
 
-	else if (key == '2')
+	else if (key == '1')
 	{
 		getPaletteType(1);
+	}
+
+	else if (key == '2')
+	{
+		getPaletteType(2);
 	}
 
 	//--
@@ -336,7 +344,7 @@ void ofxColorRandom::Changed_Params(ofAbstractParameter& e)
 //--------------------------------------------------------------
 void ofxColorRandom::getPaletteType(int type)
 {
-	if (type == -1)
+	if (type == -1)//if no args use the last one!
 	{
 		type = index_CallOptions;
 	}
@@ -361,6 +369,19 @@ void ofxColorRandom::getPaletteType(int type)
 	else if (index_CallOptions == 1)
 	{
 		auto G = ColorGeneratorDeuteranopia();
+
+		paletteGenerated.clear();
+		for (int i = 0; i < amountColors; i++)
+		{
+			std::tuple<int, int, int> r = G();
+			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
+			paletteGenerated.push_back(c);
+		}
+	}
+
+	else if (index_CallOptions == 2)
+	{
+		auto G = ColorGeneratorTEST();
 
 		paletteGenerated.clear();
 		for (int i = 0; i < amountColors; i++)
