@@ -2,6 +2,14 @@
 
 #include "ofMain.h"
 
+/*
+
+WIP 
+
+broken. luminosity breaks
+
+*/
+
 //----
 
 // randomcolor.cpp : Defines the entry point for the console application.
@@ -16,162 +24,10 @@
 #include <time.h> /* time */
 #include <functional>
 
+#include "sample.cpp"
+
 //--
 
-//TODO: TEST
-//--------------------------------------------------------------------------
-auto ColorGeneratorTEST = [=]() -> std::function<std::tuple<int, int, int>()> {
-	srand((int)time(NULL));
-
-	RandomColor::Options o;
-
-	o.seed = ofRandom(1) * 1000;
-	//o.seed = rand() % 1000;
-
-	o.hue = 0;
-	o.hue_name = RandomColor::UNSET;
-
-	auto RG = RandomColor::RandomColorGenerator(o);
-	//auto RG = RandomColor::RandomColorGenerator(o);
-
-	int  j = 3;
-	int  i = 1;
-	return [i, j, RG]() mutable {
-		bool flag_done = false;
-
-		while (!flag_done) {
-			i++;
-			if (i > 8) {
-				i = 2;
-				j++;
-				if (j > 3) {
-					j = 1;
-				}
-			}
-			flag_done = true;
-
-			auto color_name = static_cast<RandomColor::HUENAMES>(i);
-			auto color_lum = static_cast<RandomColor::LUMINOSITY>(i);
-
-
-			//if (color_name != RandomColor::HUENAMES::BLUE)
-			//{
-			//	flag_done = false;
-			//}
-
-			//if (/*color_name != RandomColor::HUENAMES::RED && */color_name != RandomColor::HUENAMES::GREEN)
-			//if (color_name != RandomColor::HUENAMES::MONOCHROME)
-			//if (color_name != RandomColor::HUENAMES::GREEN)
-			if (color_name != RandomColor::HUENAMES::BLUE)
-			//if (color_name != RandomColor::HUENAMES::YELLOW)
-			//if (color_lum != RandomColor::LUMINOSITY::BRIGHT)
-			{
-				flag_done = false;
-			}
-
-			//if (color_lum != RandomColor::LUMINOSITY::LIGHT && color_name != RandomColor::HUENAMES::RED)
-
-
-				/*
-				if (color_lum == RandomColor::LUMINOSITY::DARK ||
-					color_lum == RandomColor::LUMINOSITY::LIGHT ||
-					color_lum == RandomColor::LUMINOSITY::BRIGHT
-					)
-				{
-					flag_done = false;
-				}
-
-
-				if (color_name == RandomColor::HUENAMES::RED ||
-					color_name == RandomColor::HUENAMES::ORANGE ||
-					//color_name == RandomColor::HUENAMES::GREEN ||
-					color_name == RandomColor::HUENAMES::PURPLE ||
-					color_name == RandomColor::HUENAMES::BLUE ||
-					color_name == RandomColor::HUENAMES::YELLOW ||
-					color_name == RandomColor::HUENAMES::MONOCHROME||
-					color_name == RandomColor::HUENAMES::PINK)
-				{
-					flag_done = false;
-				}
-				*/
-
-			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
-			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
-		}
-
-		return RG.randomColorRGB();
-	};
-};
-
-// Useful methods / snippets / Examples
-// from sample.cpp
-//--------------------------------------------------------------------------
-auto ColorGeneratorDeuteranopia = [=]() -> std::function<std::tuple<int, int, int>()> {
-	srand((int)time(NULL));
-
-	RandomColor::Options o;
-
-	o.hue = 0;
-	o.hue_name = RandomColor::UNSET;
-	o.seed = rand() % 1000;
-	auto RG = RandomColor::RandomColorGenerator(o);
-
-	int  j = 3;
-	int  i = 1;
-	return [i, j, RG]() mutable {
-		bool flag_done = false;
-		while (!flag_done) {
-			i++;
-			if (i > 8) {
-				i = 2;
-				j++;
-				if (j > 3) {
-					j = 1;
-				}
-			}
-			flag_done = true;
-			auto color_name = static_cast<RandomColor::HUENAMES>(i);
-
-			if (color_name == RandomColor::HUENAMES::RED || color_name == RandomColor::HUENAMES::ORANGE || color_name == RandomColor::HUENAMES::GREEN || color_name == RandomColor::HUENAMES::PURPLE || color_name == RandomColor::HUENAMES::PINK) {
-				flag_done = false;
-			}
-
-			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
-			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
-		}
-		return RG.randomColorRGB();
-	};
-};
-
-//--------------------------------------------------------------------------
-auto ColorGeneratorNormal = [=]() -> std::function<std::tuple<int, int, int>()> {
-	srand((int)time(NULL));
-	RandomColor::Options o;
-	o.hue = 0;
-	o.hue_name = RandomColor::UNSET;
-	o.seed = rand() % 1000;
-	auto RG = RandomColor::RandomColorGenerator(o);
-	int  j = 3;
-	int  i = 1;
-	return [i, j, RG]() mutable {
-		bool flag_done = false;
-		while (!flag_done) {
-			i++;
-			if (i > 8) {
-				i = 2;
-				j++;
-				if (j > 3) {
-					j = 1;
-				}
-			}
-			flag_done = true;
-			auto color_name = static_cast<RandomColor::HUENAMES>(i);
-			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
-			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
-		}
-		return RG.randomColorRGB();
-	};
-};
 
 
 //----
@@ -200,31 +56,9 @@ typedef struct
 	ofColor color;
 	int position; // original position vs name, hue, sat...etc
 
-} colorMapping_STRUCT;
+} 
+colorMapping_STRUCT;
 
-//--
-
-// color converters
-// These string to hex conversions aren't trivial.
-static int stringToHex(std::string hex)
-{
-	int aHex;
-	stringstream convert(hex);
-	convert >> std::hex >> aHex;
-
-	return aHex;
-}
-
-static void hexToColor(ofColor& col, std::string hex)
-{
-	std::string r = hex.substr(0, 2);
-	int ri = stringToHex(r);
-	std::string g = hex.substr(2, 2);
-	int gi = stringToHex(g);
-	std::string b = hex.substr(4, 2);
-	int bi = stringToHex(b);
-	col.set(ri, gi, bi);
-}
 
 //--
 
@@ -254,17 +88,15 @@ private:
 	void keyPressed(ofKeyEventArgs& eventArgs);
 	void exit();
 
-	ofParameter<glm::vec2> position_Palette{ "position_Cards",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
+	ofParameter<int> amountColors{ "Card Colors", 7, 2, 30 };// minimal card of colors
 	int getAmountcolors();
 
 	ofParameter<int> boxSize{ "Box Size", 30, 0, 100 };//boxes
 	ofParameter<int> boxPad{ "Pad", 5, 0, 10 };
-
-	ofParameter<int> amountColors{ "Card Colors", 7, 2, 30 };// minimal card of colors
-
-	ofParameter<bool> bGui_Card{ "Cards", true };
-	//ofParameter<bool> bGui_Bg{ "Bg", true };
-
+	//ofParameter<bool> bGui_Card{ "Cards", true };
+	ofParameter<glm::vec2> position_Palette{ "position_Cards",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
+	
+	void doSortPalette();
 
 	//--
 
@@ -301,19 +133,52 @@ private:
 	//--
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
-	ofParameter<int> index_Sorting{ "Sorting Mode", 0, 0, 4 };
-	ofParameter<std::string> name_Sorting{ "Sorting", "" };
-	ofEventListener listener_ModeSorting;
+	ofParameter<int> sorting{ "Sorting Mode", 0, 0, 4 };
+	ofParameter<std::string> sorting_Name{ "Sorting", "" };
+	ofEventListener listener_Sorting;
+	void setNextSortType();
 
-	ofParameter<int> index_CallOptions{ "Index Call", 0, 0, 0 };
-	ofParameter<std::string> name_CallOptions{ "Name Call ", "" };
-	ofEventListener listener_Library;
-
-	void getPaletteType(int type = -1);//generate a palette using selected index options. no arg = same that last type.
-
+	void getPaletteTypeHue();
+	void getPaletteTypeLuminosity();
+	
 	void buildMapFromPalette();
 	void buildPaletteFromMap();
 
-	void setNextSortType();
+	//--
+
+	ofEventListener listener_Hue;
+	ofParameter<int> hue{ "HUE", 0, 0, 8 };
+	ofParameter<string> hue_Name{ "HUE ", "" };
+	//--------------------------------------------------------------------------
+	string getHueName(int i) {
+		switch (i)
+		{
+		case 0: return "UNSET"; break;
+		case 1: return "MONOCHROME"; break;
+		case 2: return "RED"; break;
+		case 3: return "ORANGE"; break;
+		case 4: return "YELLOW"; break;
+		case 5: return "GREEN"; break;
+		case 6: return "BLUE"; break;
+		case 7: return "PURPLE"; break;
+		case 8: return "PINK"; break;
+		default: return "UNKNOWN"; break;
+		}
+	}
+
+	ofEventListener listener_Luminosity;
+	ofParameter<int> luminosity{ "LUMINOSITY", 0, 0, 3 };
+	ofParameter<string> luminosity_Name{ "LUMINOSITY ", "" };
+	//--------------------------------------------------------------------------
+	string getLuminosityName(int i) {
+		switch (i)
+		{
+		case 0: return "RANDOM"; break;
+		case 1: return "BRIGHT"; break;
+		case 2: return "LIGHT"; break;
+		case 3: return "DARK"; break;
+		default: return "UNKNOWN"; break;
+		}
+	}
 };
 

@@ -1,13 +1,542 @@
-//// randomcolor.cpp : Defines the entry point for the console application.
-////
+
+// for ofxColorRandom: I use this file to prepare some predefined randomizers
+
+//--
+
+// randomcolor.cpp : Defines the entry point for the console application.
+
+
+//#include "stdafx.h"
+#include "randomcolor.h"
+#include <iostream>
+#include <fstream>
+#include <time.h> /* time */
+#include <functional>
+
+//TODO:
+// due to lambda usage, and my ignorance on this topic,
+// I don't know how to simplify this repeated code.
+
+
+// by hue
 //
-////#include "stdafx.h"
-//#include "randomcolor.h"
-//#include <iostream>
-//#include <fstream>
-//#include <time.h> /* time */
-//#include <functional>
-//
+//  
+//--------------------------------------------------------------------------
+auto ColorGenerator_UNSET = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::UNSET) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_MONOCHROME = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::MONOCHROME) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_RED = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::RED) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_ORANGE = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::ORANGE) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_YELLOW = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::YELLOW) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_GREEN = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::GREEN) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_BLUE = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::BLUE) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_PURPLE = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::PURPLE) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_PINK = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_name = static_cast<RandomColor::HUENAMES>(i);
+
+			if (color_name != RandomColor::HUENAMES::PINK) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+
+//----
+
+
+// by luminance
+// 
+// 
+//--------------------------------------------------------------------------
+auto ColorGenerator_LUM_RANDOM = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_lum = static_cast<RandomColor::LUMINOSITY>(i);
+
+			if (color_lum != RandomColor::LUMINOSITY::RANDOM) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_LUM_BRIGHT = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_lum = static_cast<RandomColor::LUMINOSITY>(i);
+
+			if (color_lum != RandomColor::LUMINOSITY::BRIGHT) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_LUM_LIGHT = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_lum = static_cast<RandomColor::LUMINOSITY>(i);
+
+			if (color_lum != RandomColor::LUMINOSITY::LIGHT) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+//--------------------------------------------------------------------------
+auto ColorGenerator_LUM_DARK = [=]()->std::function<std::tuple<int, int, int>()> {
+
+	srand((int)time(NULL));
+	RandomColor::Options o;
+	o.hue = 0;
+	o.hue_name = RandomColor::UNSET;
+	o.seed = rand() % 1000;
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+
+	int  j = 3;
+	int  i = 1;
+	return [i, j, RG]() mutable {
+		bool flag_done = false;
+
+		while (!flag_done) {
+			i++;
+			if (i > 8) {
+				i = 2;
+				j++;
+				if (j > 3) {
+					j = 1;
+				}
+			}
+			flag_done = true;
+
+			auto color_lum = static_cast<RandomColor::LUMINOSITY>(i);
+
+			if (color_lum != RandomColor::LUMINOSITY::DARK) flag_done = false;
+
+			RG.options.luminosity = static_cast<RandomColor::LUMINOSITY>(j);
+			RG.options.hue_name = static_cast<RandomColor::HUENAMES>(i);
+		}
+
+		return RG.randomColorRGB();
+	};
+};
+
+
+
 //auto ColorGeneratorDeuteranopia = [=]() -> std::function<std::tuple<int, int, int>()> {
 //    srand((int) time(NULL));
 //    RandomColor::Options o;
