@@ -13,8 +13,7 @@ https://github.com/xuboying/randomcolor-cpp
 ### Demos and sources:  
 https://randomcolor.lllllllllllllllll.com/  
 https://github.com/davidmerfield/randomColor  
-https://github.com/davidmerfield/randomColor/tree/master/demo  
 
 ### Dependencies
-- [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers) / _Easy to remove. Only for handle settings_.  
+- [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers) / _Easy to remove. Only for handle settings and GUI theme_.  
 - ofxGui / _oF Core_
