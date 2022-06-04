@@ -18,7 +18,7 @@ randomColor generates attractive colors by default.
 More specifically, randomColor produces bright colors with a reasonably high saturation.  
 This makes randomColor particularly useful for data visualizations and generative art._
 
-### Simply ported from (C):  
+### Simply ported from (C++):  
 https://github.com/xuboying/randomcolor-cpp 
 
 ### Original Source (javascript):  
