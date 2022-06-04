@@ -5,8 +5,8 @@ Randomized atractive Color Palette's generator.
 - Can be limited by Hue and luminance ranges.  
 - Colors can be sorted by hue, saturation and brightness.
 
-## Ported from javascipt based Random Color 
-Originally source and demo [here](https://randomcolor.lllllllllllllllll.com/).
+## Ported from javascript based Random Color 
+Original Demo [here](https://randomcolor.lllllllllllllllll.com/).
 
 ## Why does this exist?
 _There are lots of clever one-liners for generating random colors:  
@@ -20,8 +20,7 @@ More specifically, randomColor produces bright colors with a reasonably high sat
 ### Simply ported from (C):  
 https://github.com/xuboying/randomcolor-cpp 
 
-### Original Demos and Sources (javascript):  
-https://randomcolor.lllllllllllllllll.com/  
+### Original Source (javascript):  
 https://github.com/davidmerfield/randomColor  
 
 ### Dependencies
