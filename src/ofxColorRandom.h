@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+ 
+//----
 
 // randomcolor.cpp : Defines the entry point for the console application.
 // from: https://github.com/xuboying/randomcolor-cpp
@@ -12,12 +14,10 @@
 #include <time.h> /* time */
 #include <functional>
 
-
-//----
-
+//--
 
 // Useful methods / snippets / Examples
-
+// from sample.cpp
 //--------------------------------------------------------------------------
 auto ColorGeneratorDeuteranopia = [=]() -> std::function<std::tuple<int, int, int>()> {
     srand((int)time(NULL));
@@ -138,47 +138,26 @@ static void hexToColor(ofColor& col, std::string hex)
 
 class ofxColorRandom
 {
-public:
-
-    //--
-
-    // sorting map tools
-    // comparing colors to sorting methods
-    //--------------------------------------------------------------
-    bool compareName(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
-    {
-        return s1.name < s2.name;
-    }
-    bool compareBrightness(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
-    {
-        return s1.color.getBrightness() < s2.color.getBrightness();
-    }
-    bool compareHue(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
-    {
-        return s1.color.getHue() < s2.color.getHue();
-    }
-    bool compareSaturation(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
-    {
-        return s1.color.getSaturation() < s2.color.getSaturation();
-    }
-    bool comparePosition(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
-    {
-        return s1.position < s2.position;
-    }
-
-    //--
-
+private:
+    
     ofxPanel gui;
     
     string path_Global;
     string path_FileSettings;
 
-	ofxColorRandom();
+public:
+	
+    ofxColorRandom();
 	~ofxColorRandom();
 
 	void setup();
-	void update();
 	void draw();
+
+private:
+	
+    void startup();
+	void setupParams();
+	void update();
     void drawCard();
 	void keyPressed(ofKeyEventArgs &eventArgs);
 	void exit();
@@ -209,14 +188,15 @@ private:
 
 private:
     
-    vector<ofColor> paletteCard;
+    vector<ofColor> paletteGenerated;
 
     //--
 
 public:
 
-    vector<ofColor> getPaletteCard() {
-        return paletteCard;
+    //--------------------------------------------------------------
+    vector<ofColor> getPalette() {
+        return paletteGenerated;
     }
 
 private:
@@ -229,14 +209,19 @@ private:
     //--
 
     // 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
-    ofParameter<int> MODE_SORTING{ "Sorting Mode", 0, 0, 4 };
-    ofParameter<std::string> MODE_SORTING_name{ "Sorting", "" };
+    ofParameter<int> index_Sorting{ "Sorting Mode", 0, 0, 4 };
+    ofParameter<std::string> name_Sorting{ "Sorting", "" };
     ofEventListener listener_ModeSorting;
 
     ofParameter<int> index_CallOptions{ "Index Call", 0, 0, 0 };
     ofParameter<std::string> name_CallOptions{ "Name Call ", "" };
     ofEventListener listener_Library;
 
-    void getPaletteType(int type = -1);
+    void getPaletteType(int type = -1);//generate a palette using selected index options. no arg = same that last type.
+
+    void buildMapFromPalette();
+    void buildPaletteFromMap();
+
+    void setNextSortType();
 };
 

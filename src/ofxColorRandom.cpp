@@ -1,7 +1,34 @@
 #include "ofxColorRandom.h"
 
+
 //--
- 
+
+// sorting map tools
+// comparing colors to sorting methods
+//--------------------------------------------------------------
+bool compareName(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
+{
+	return s1.name < s2.name;
+}
+bool compareBrightness(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
+{
+	return s1.color.getBrightness() < s2.color.getBrightness();
+}
+bool compareHue(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
+{
+	return s1.color.getHue() < s2.color.getHue();
+}
+bool compareSaturation(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
+{
+	return s1.color.getSaturation() < s2.color.getSaturation();
+}
+bool comparePosition(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
+{
+	return s1.position < s2.position;
+}
+
+//--
+
 //--------------------------------------------------------------
 ofxColorRandom::ofxColorRandom()
 {
@@ -18,28 +45,17 @@ ofxColorRandom::~ofxColorRandom()
 	ofRemoveListener(ofEvents().keyPressed, this, &ofxColorRandom::keyPressed);
 
 	ofAddListener(params.parameterChangedE(), this, &ofxColorRandom::Changed_Params);
+
+	exit();
 }
 
 //--------------------------------------------------------------
-void ofxColorRandom::setup()
+void ofxColorRandom::setupParams()
 {
-	path_FileSettings = path_Global + "AppSettings.xml";
-	ofxSurfingHelpers::CheckFolder(path_Global);
-
-	//-
-
-	// exclude
-	MODE_SORTING_name.setSerializable(false);
-	name_CallOptions.setSerializable(false);
-	bGui_Card.setSerializable(false);
-
-	//--
-
-	// params
 	params.setName("ofxColorRandom");
 
-	params.add(MODE_SORTING);
-	params.add(MODE_SORTING_name);
+	params.add(index_Sorting);
+	params.add(name_Sorting);
 
 	params.add(index_CallOptions);
 	params.add(name_CallOptions);
@@ -62,6 +78,22 @@ void ofxColorRandom::setup()
 
 	ofAddListener(params.parameterChangedE(), this, &ofxColorRandom::Changed_Params);
 
+	//-
+
+	// exclude
+	name_Sorting.setSerializable(false);
+	name_CallOptions.setSerializable(false);
+	bGui_Card.setSerializable(false);
+}
+
+//--------------------------------------------------------------
+void ofxColorRandom::setup()
+{
+	path_FileSettings = path_Global + "AppSettings.xml";
+	ofxSurfingHelpers::CheckFolder(path_Global);
+	
+	setupParams();
+
 	//--
 
 	gui.setup("ofxColorRandom");
@@ -71,30 +103,32 @@ void ofxColorRandom::setup()
 	//--
 
 	//--------------------------------------------------------------
-	listener_ModeSorting = MODE_SORTING.newListener([this](int& i)
+	listener_ModeSorting = index_Sorting.newListener([this](int& i)
 		{
-			//ofLogNotice("MODE_SORTING: ") << i;
+			ofLogNotice("index_Sorting: ") << i;
 
-			//if (MODE_SORTING == 5) MODE_SORTING = 0;
-			//MODE_SORTING = ofClamp(MODE_SORTING, 0, 4);
+			buildMapFromPalette();
 
-			//if (MODE_SORTING == 0) { ofSort(colors_STRUCT, comparePosition); MODE_SORTING_name = "Original"; }
-			//else if (MODE_SORTING == 1) { ofSort(colors_STRUCT, compareName); MODE_SORTING_name = "Name"; }
-			//else if (MODE_SORTING == 2) { ofSort(colors_STRUCT, compareHue); MODE_SORTING_name = "Hue"; }
-			//else if (MODE_SORTING == 3) { ofSort(colors_STRUCT, compareBrightness); MODE_SORTING_name = "Brightness"; }
-			//else if (MODE_SORTING == 4) { ofSort(colors_STRUCT, compareSaturation); MODE_SORTING_name = "Saturation"; }
+			if (index_Sorting == 5) index_Sorting = 0;
+			index_Sorting = ofClamp(index_Sorting, 0, 4);
 
-			////clearRectangles();
-			////buildRectangles();
+			if (index_Sorting == 0) { ofSort(colors_STRUCT, comparePosition); name_Sorting = "Original"; }
+			else if (index_Sorting == 1) { ofSort(colors_STRUCT, compareName); name_Sorting = "Name"; }
+			else if (index_Sorting == 2) { ofSort(colors_STRUCT, compareHue); name_Sorting = "Hue"; }
+			else if (index_Sorting == 3) { ofSort(colors_STRUCT, compareBrightness); name_Sorting = "Brightness"; }
+			else if (index_Sorting == 4) { ofSort(colors_STRUCT, compareSaturation); name_Sorting = "Saturation"; }
+
+			buildPaletteFromMap();
 		});
 
 	// 1. default sorting
-	MODE_SORTING = SORTING_ORIGINAL;
-	// by name, at the start
+	// by name
+	index_Sorting = SORTING_ORIGINAL;
 
 	//--
 
-	index_CallOptions.setMax(2);
+	//TODO: modify hard-coded when adding modes!
+	index_CallOptions.setMax(1);
 
 	//--------------------------------------------------------------
 	listener_Library = index_CallOptions.newListener([this](int& i)
@@ -107,20 +141,26 @@ void ofxColorRandom::setup()
 			{
 			case 0: name_CallOptions = "ColorGeneratorDeuteranopia"; break;
 			case 1: name_CallOptions = "ColorGeneratorNormal"; break;
+				//.. add more here
 			}
 		});
 
 	//----
 
-
-	//-----
-
 	// startup
+	startup();
+}
+
+//--------------------------------------------------------------
+void ofxColorRandom::startup() {
 
 	position_Palette = glm::vec2(20, ofGetHeight() / 2);
 
 	// settings
 	ofxSurfingHelpers::loadGroup(params, path_FileSettings);
+
+	getPaletteType();
+	index_Sorting = index_Sorting;
 }
 
 //--------------------------------------------------------------
@@ -154,6 +194,22 @@ void ofxColorRandom::keyPressed(ofKeyEventArgs& eventArgs)
 
 	if (0) {}
 
+	else if (key == OF_KEY_TAB)
+	{
+		setNextSortType();
+	}
+
+	else if (key == '-')
+	{
+		amountColors--;
+		getPaletteType();
+	}
+	else if (key == '+')
+	{
+		amountColors++;
+		getPaletteType();
+	}
+
 	else if (key == ' ')
 	{
 		getPaletteType();
@@ -173,6 +229,7 @@ void ofxColorRandom::keyPressed(ofKeyEventArgs& eventArgs)
 
 	/*
 	{
+		// Example: saves an html file with the colors
 		std::ofstream myfile;
 		myfile.open("example.html");
 		auto g = colorgeneratornormal();
@@ -217,31 +274,26 @@ void ofxColorRandom::drawCard()
 		int padding = 15;
 		int labelSize = 25;
 
-		float yBg = position_Palette.get().y - padding;
-		float hBg = (boxSize + boxPad) + 2 * padding + labelSize;
-		float ymaxBg = yBg + hBg;
+		int yBg = position_Palette.get().y - padding;
+		int hBg = (boxSize + boxPad) + 2 * padding + labelSize;
+		int ymaxBg = yBg + hBg;
 
 		ofColor colorBgCards = ofColor(250);
 
-		//if (colors_STRUCT.size() > 0)
+		ofPushStyle();
+		ofFill();
+
+		for (int i = 0; i < paletteGenerated.size(); i++)
 		{
-			ofPushStyle();
-			ofFill();
-
-			for (int i = 0; i < paletteCard.size(); i++)
-			{
-				ofColor c = paletteCard[i];
-				ofSetColor(c);
-				float round = 2.5f;
-				ofDrawRectRounded(
-					glm::vec2(position_Palette.get().x + i * (boxSize + boxPad), position_Palette.get().y),
-					boxSize, boxSize, round);
-			}
-
-			//--
-
-			ofPopStyle();
+			ofColor c = paletteGenerated[i];
+			ofSetColor(c);
+			float round = 2.5f;
+			ofDrawRectRounded(
+				glm::vec2(position_Palette.get().x + i * (boxSize + boxPad), position_Palette.get().y),
+				boxSize, boxSize, round);
 		}
+
+		ofPopStyle();
 	}
 }
 
@@ -297,12 +349,12 @@ void ofxColorRandom::getPaletteType(int type)
 	{
 		auto G = ColorGeneratorNormal();
 
-		paletteCard.clear();
+		paletteGenerated.clear();
 		for (int i = 0; i < amountColors; i++)
 		{
 			std::tuple<int, int, int> r = G();
 			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteCard.push_back(c);
+			paletteGenerated.push_back(c);
 		}
 	}
 
@@ -310,12 +362,59 @@ void ofxColorRandom::getPaletteType(int type)
 	{
 		auto G = ColorGeneratorDeuteranopia();
 
-		paletteCard.clear();
+		paletteGenerated.clear();
 		for (int i = 0; i < amountColors; i++)
 		{
 			std::tuple<int, int, int> r = G();
 			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteCard.push_back(c);
+			paletteGenerated.push_back(c);
 		}
 	}
+}
+
+//--------------------------------------------------------------
+void ofxColorRandom::buildMapFromPalette()
+{
+	colors_STRUCT.clear();
+
+	std::string name = "";
+	ofColor c;
+
+	for (int i = 0; i < paletteGenerated.size(); i++)
+	{
+		c = paletteGenerated[i];
+		name = name_CallOptions.get() + "-" + ofToString(i);
+		{
+			// 1. names map
+			colors_NamesMAP[name] = c;
+
+			// 2. struct
+			colorMapping_STRUCT myColor;
+			myColor.name = name;
+			myColor.color = c;
+			myColor.position = i;
+
+			// 3. add color to vector
+			colors_STRUCT.push_back(myColor);
+		}
+	}
+}
+
+//--------------------------------------------------------------
+void ofxColorRandom::buildPaletteFromMap()
+{
+	paletteGenerated.clear();
+
+	ofColor c;
+
+	for (int i = 0; i < colors_STRUCT.size(); i++)
+	{
+		c = colors_STRUCT[i].color;
+		paletteGenerated.push_back(c);
+	}
+}
+//--------------------------------------------------------------
+void ofxColorRandom::setNextSortType()
+{
+	index_Sorting++;
 }
