@@ -4,8 +4,11 @@ Randomized atractive Color Palette's generator.
 - Can be limited by Hue and luminance ranges.  
 - Colors can be sorted by hue, saturation and brightness.
 
-_Why does this exist?
-There are lots of clever one-liners for generating random colors:
+Originally taken from[here](https://randomcolor.lllllllllllllllll.com/)
+
+
+### Why does this exist?
+_There are lots of clever one-liners for generating random colors:
 Unfortunately, this code naturally produces murky greys, browns and greens.
 randomColor generates attractive colors by default. More specifically, randomColor produces bright colors with a reasonably high saturation. This makes randomColor particularly useful for data visualizations and generative art._
 
