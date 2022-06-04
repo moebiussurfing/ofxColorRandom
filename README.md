@@ -23,7 +23,7 @@ https://github.com/davidmerfield/randomColor
 
 ## Author/s
 I made only the simple port to oF.  
-Look the other GitHub for authoring.  
+Look the other GitHub link for original authoring.  
 
 moebiusSurfing, 2022.  
 ( ManuMolina ) 
