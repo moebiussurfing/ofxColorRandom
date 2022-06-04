@@ -21,8 +21,9 @@ https://github.com/davidmerfield/randomColor
 ## Tested Systems
 - **Windows 10** / **VS 2022** / **oF 0.12**
 
-## Author
+## Author/s
 I made only the simple port to oF.  
 Look the other GitHub for authoring.  
+
 moebiusSurfing, 2022.  
 ( ManuMolina ) 
