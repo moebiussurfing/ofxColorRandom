@@ -1,3 +1,7 @@
+WIP  
+mostly broken..  
+
+
 Simple port of:  
 https://github.com/davidmerfield/randomColor/tree/master/demo  
 https://github.com/davidmerfield/randomColor  
