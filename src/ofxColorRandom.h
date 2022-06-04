@@ -2,14 +2,6 @@
 
 #include "ofMain.h"
 
-/*
-
-WIP 
-
-broken. luminosity breaks
-
-*/
-
 //----
 
 // randomcolor.cpp : Defines the entry point for the console application.
@@ -25,9 +17,6 @@ broken. luminosity breaks
 #include <functional>
 
 #include "sample.cpp"
-
-//--
-
 
 
 //----
@@ -88,13 +77,13 @@ private:
 	void keyPressed(ofKeyEventArgs& eventArgs);
 	void exit();
 
-	ofParameter<int> amountColors{ "Card Colors", 7, 2, 30 };// minimal card of colors
+	ofParameter<int> amountColors{ "AMOUNT COLORS", 7, 2, 30 };// minimal card of colors
 	int getAmountcolors();
 
-	ofParameter<int> boxSize{ "Box Size", 30, 0, 100 };//boxes
-	ofParameter<int> boxPad{ "Pad", 5, 0, 10 };
-	//ofParameter<bool> bGui_Card{ "Cards", true };
-	ofParameter<glm::vec2> position_Palette{ "position_Cards",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
+	ofParameter<int> boxSize{ "BOX SIZE", 30, 0, 100 };//boxes
+	ofParameter<int> boxPad{ "PAD", 5, 0, 10 };
+	ofParameter<bool> bGui{ "ofxColorRandom", true };
+	ofParameter<glm::vec2> position_Palette{ "POSITION",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
 	
 	void doSortPalette();
 
@@ -133,14 +122,11 @@ private:
 	//--
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
-	ofParameter<int> sorting{ "Sorting Mode", 0, 0, 4 };
-	ofParameter<std::string> sorting_Name{ "Sorting", "" };
+	ofParameter<int> sorting{ "SORTING MODE", 0, 0, 4 };
+	ofParameter<std::string> sorting_Name{ "SORTING", "" };
 	ofEventListener listener_Sorting;
 	void setNextSortType();
 
-	void getPaletteTypeHue();
-	void getPaletteTypeLuminosity();
-	
 	void buildMapFromPalette();
 	void buildPaletteFromMap();
 
@@ -180,5 +166,10 @@ private:
 		default: return "UNKNOWN"; break;
 		}
 	}
+
+	void buildPalette(bool bSort = true);
+
+	ofColor getRandomColor();
+	ofColor colorBg = 64;
 };
 

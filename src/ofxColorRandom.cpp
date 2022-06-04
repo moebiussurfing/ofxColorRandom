@@ -3,7 +3,7 @@
 
 //--
 
-// sorting map tools
+// Sorting map tools
 // comparing colors to sorting methods
 //--------------------------------------------------------------
 bool compareName(const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2)
@@ -54,7 +54,7 @@ void ofxColorRandom::setupParams()
 {
 	params.setName("ofxColorRandom");
 
-	//params.add(bGui_Card);
+	//params.add(bGui);
 	params.add(amountColors);
 	params.add(hue);
 	params.add(hue_Name);
@@ -63,7 +63,7 @@ void ofxColorRandom::setupParams()
 	params.add(sorting);
 	params.add(sorting_Name);
 
-	params_Layout.setName("Layout");
+	params_Layout.setName("LAYOUT");
 	params_Layout.add(boxSize);
 	params_Layout.add(boxPad);
 	params.add(params_Layout);
@@ -83,7 +83,7 @@ void ofxColorRandom::setupParams()
 	gui.add(params);
 	gui.setPosition(20, 200);
 
-	auto &g0 = gui.getGroup(params.getName());
+	auto& g0 = gui.getGroup(params.getName());
 	g0.getGroup(params_Layout.getName()).minimize();
 
 	position_Palette = glm::vec2(20, 20);
@@ -106,28 +106,7 @@ void ofxColorRandom::setup()
 
 			ofLogNotice("hue: ") << i << " " << hue_Name;
 
-			//getPaletteTypeHue();
-			//doSortPalette();
-
-			//--
-
-			//TODO: improve passing vars to lambdas... I don't know how to do it...
-			// 
-			//RandomColor::HUENAMES _hue;
-			//RandomColor::LUMINOSITY _luminosity;
-			//switch (i)
-			//{
-			//case 0: return "UNSET"; break;
-			//case 1: return "MONOCHROME"; break;
-			//case 2: return "RED"; break;
-			//case 3: return "ORANGE"; break;
-			//case 4: return "YELLOW"; break;
-			//case 5: return "GREEN"; break;
-			//case 6: return "BLUE"; break;
-			//case 7: return "PURPLE"; break;
-			//case 8: return "PINK"; break;
-			//default: return "UNKNOWN"; break;
-			//}
+			buildPalette();
 		}
 	);
 
@@ -138,8 +117,7 @@ void ofxColorRandom::setup()
 
 			ofLogNotice("luminosity: ") << i << " " << luminosity_Name;
 
-			//getPaletteTypeLuminosity();
-			//doSortPalette();
+			buildPalette();
 		}
 	);
 
@@ -161,6 +139,50 @@ void ofxColorRandom::setup()
 
 	// startup
 	startup();
+}
+
+//--------------------------------------------------------------
+ofColor ofxColorRandom::getRandomColor() {
+
+	ofLogNotice(__FUNCTION__);
+
+	ofColor c;
+
+	//srand((int)time(NULL));
+
+	RandomColor::Options o;
+
+	o.seed = rand() % 1000;
+
+	switch (hue)
+	{
+	case 0: o.hue_name = RandomColor::UNSET; break;
+	case 1: o.hue_name = RandomColor::MONOCHROME; break;
+	case 2: o.hue_name = RandomColor::RED; break;
+	case 3: o.hue_name = RandomColor::ORANGE; break;
+	case 4: o.hue_name = RandomColor::YELLOW; break;
+	case 5: o.hue_name = RandomColor::GREEN; break;
+	case 6: o.hue_name = RandomColor::BLUE; break;
+	case 7: o.hue_name = RandomColor::PURPLE; break;
+	case 8: o.hue_name = RandomColor::PINK; break;
+	}
+
+	switch (luminosity)
+	{
+	case 0: o.luminosity = RandomColor::LUMINOSITY::RANDOM; break;
+	case 1: o.luminosity = RandomColor::LUMINOSITY::BRIGHT; break;
+	case 2: o.luminosity = RandomColor::LUMINOSITY::LIGHT; break;
+	case 3: o.luminosity = RandomColor::LUMINOSITY::DARK; break;
+	}
+
+	auto RG = RandomColor::RandomColorGenerator(o);
+	auto r = RG.randomColorRGB();
+
+	c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
+
+	ofLogNotice(__FUNCTION__) << " : " << c;
+
+	return c;
 }
 
 //--------------------------------------------------------------
@@ -188,9 +210,7 @@ void ofxColorRandom::startup() {
 	// settings
 	ofxSurfingHelpers::loadGroup(params, path_FileSettings);
 
-	if (hue < 2) hue = 2;//0 & 1 are broken..
-	getPaletteTypeHue();
-	doSortPalette();
+	buildPalette();
 }
 
 //--------------------------------------------------------------
@@ -199,6 +219,7 @@ void ofxColorRandom::update() {
 
 //--------------------------------------------------------------
 void ofxColorRandom::draw() {
+	ofBackground(colorBg);
 
 	drawCard();
 
@@ -224,16 +245,34 @@ void ofxColorRandom::keyPressed(ofKeyEventArgs& eventArgs)
 
 	if (0) {}
 
-	else if (key == OF_KEY_RIGHT)
+	else if (key == ' ')
+	{
+		buildPalette();
+	}
+
+	else if (key == OF_KEY_F1)
+	{
+		colorBg = getRandomColor();
+	}
+
+	else if (key == 'H')
 	{
 		int i = hue;
 		i++;
-		i = i % (hue.getMax() +1);
-		if (i < 2)i = 2;
+		i = i % (hue.getMax() + 1);
 		hue = i;
 
-		getPaletteTypeHue();
-		doSortPalette();
+		buildPalette();
+	}
+
+	else if (key == 'L')
+	{
+		int i = luminosity;
+		i++;
+		i = i % (luminosity.getMax() + 1);
+		luminosity = i;
+
+		buildPalette();
 	}
 
 	else if (key == OF_KEY_TAB)
@@ -244,57 +283,11 @@ void ofxColorRandom::keyPressed(ofKeyEventArgs& eventArgs)
 	else if (key == '-')
 	{
 		amountColors--;
-		getPaletteTypeHue();
 	}
 	else if (key == '+')
 	{
 		amountColors++;
-		getPaletteTypeHue();
 	}
-
-	else if (key == ' ')
-	{
-		getPaletteTypeHue();
-		doSortPalette();
-	}
-
-	else if (key == OF_KEY_RETURN)
-	{
-		getPaletteTypeLuminosity();
-		doSortPalette();
-	}
-
-
-	//--
-
-	/*
-	{
-		// Example: saves an html file with the colors
-		std::ofstream myfile;
-		myfile.open("example.html");
-		auto g = colorgeneratornormal();
-
-		palettecard.clear();
-
-		for (int i = 0; i < amtcolorsincard; i++)
-		{
-			std::tuple<int, int, int> r = g();
-			std::cout << std::get<0>(r) << "," << std::get<1>(r) << "," << std::get<2>(r) << std::endl;
-
-			ofcolor c = ofcolor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			palettecard.push_back(c);
-
-			myfile << r"(
-		<h2 style = 'color:rgba(0,0,0,0);background-color:rgb()"
-				<< std::get<0>(r) << "," << std::get<1>(r) << "," << std::get<2>(r) << r"()'>
-				.
-			</h2>
-		)";
-		}
-
-		myfile.close();
-	}
-	*/
 }
 
 //--------------------------------------------------------------
@@ -305,7 +298,7 @@ void ofxColorRandom::exit() {
 //--------------------------------------------------------------
 void ofxColorRandom::drawCard()
 {
-	//if (bGui_Card)
+	if (bGui)
 	{
 		ofPushStyle();
 		ofFill();
@@ -334,220 +327,31 @@ int ofxColorRandom::getAmountcolors()
 //--------------------------------------------------------------
 void ofxColorRandom::Changed_Params(ofAbstractParameter& e)
 {
-	////if (!DISABLE_Callbacks)
-	//{
-	//	string name = e.getName();
-	//	ofLogNotice(__FUNCTION__) << name << " : " << e;
+	//if (DISABLE_Callbacks) return;
 
-	//	//--
+	string name = e.getName();
+	ofLogNotice(__FUNCTION__) << name << " : " << e;
 
-	//	// gui panels
+	//--
 
-	//	if (0) {}
+	if (0) {}
 
-	//	//// reset box
-	//	//else if (name == bResetColorsBox.getName() && bResetColorsBox)
-	//	//{
-	//	//	bResetColorsBox = false;
-	//	//	//boxes
-	//	//	boxSize = 30;
-	//	//	boxPad = 0;
-	//	//	// minimal card of colors
-	//	//	amountColors = 7;
-	//	//	amtCardsInRow = 4;
-	//	//}
-	//}
+	else if (name == amountColors.getName())
+	{
+		buildPalette();
+	}
 }
 
 //--------------------------------------------------------------
-void ofxColorRandom::getPaletteTypeHue()
+void ofxColorRandom::buildPalette(bool bSort)
 {
-	switch (hue.get())
+	paletteGenerated.clear();
+	for (size_t i = 0; i < amountColors; i++)
 	{
-
-	case 0:
-	{
-		break;//broken
-
-		auto G = ColorGenerator_UNSET();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 1:
-	{
-		break;//broken
-
-		auto G = ColorGenerator_MONOCHROME();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 2:
-	{
-		auto G = ColorGenerator_RED();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 3:
-	{
-		auto G = ColorGenerator_ORANGE();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 4:
-	{
-		auto G = ColorGenerator_YELLOW();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 5:
-	{
-		auto G = ColorGenerator_GREEN();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 6:
-	{
-		auto G = ColorGenerator_BLUE();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 7:
-	{
-		auto G = ColorGenerator_PURPLE();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 8:
-	{
-		auto G = ColorGenerator_PINK();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
+		paletteGenerated.push_back(getRandomColor());
 	}
 
-}
-
-//--------------------------------------------------------------
-void ofxColorRandom::getPaletteTypeLuminosity()
-{
-	switch (luminosity.get())
-	{
-
-	case 0:
-	{
-		auto G = ColorGenerator_LUM_RANDOM();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 1:
-	{
-		auto G = ColorGenerator_LUM_BRIGHT();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 2:
-	{
-		auto G = ColorGenerator_LUM_LIGHT();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-
-	case 3:
-	{
-		auto G = ColorGenerator_LUM_DARK();
-		paletteGenerated.clear();
-		for (int i = 0; i < amountColors; i++)
-		{
-			std::tuple<int, int, int> r = G();
-			ofColor c = ofColor(std::get<0>(r), std::get<1>(r), std::get<2>(r));
-			paletteGenerated.push_back(c);
-		}
-	}
-	break;
-	}
+	if (bSort) doSortPalette();
 }
 
 //--------------------------------------------------------------
@@ -563,8 +367,6 @@ void ofxColorRandom::buildMapFromPalette()
 		c = paletteGenerated[i];
 
 		name = ofToString(i);
-		//name = name_CallOptions.get() + "-" + ofToString(i);
-
 		{
 			// 1. names map
 			colors_NamesMAP[name] = c;
@@ -594,6 +396,7 @@ void ofxColorRandom::buildPaletteFromMap()
 		paletteGenerated.push_back(c);
 	}
 }
+
 //--------------------------------------------------------------
 void ofxColorRandom::setNextSortType()
 {
