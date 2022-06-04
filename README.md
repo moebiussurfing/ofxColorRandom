@@ -1,5 +1,5 @@
 
-Randomized color palettes generator.  
+Randomized color palette's generator.  
 
 - Can be limited by Hue and luminance ranges.  
 - Colors can be sorted by hue, saturation, brightness.
