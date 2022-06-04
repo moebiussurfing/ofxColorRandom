@@ -7,7 +7,7 @@ Randomized Color Palette's generator.
 ## Screenshot
 ![](readme_images/Capture.PNG)
 
-#### Simple ported from:  
+#### Simply ported from:  
 https://github.com/xuboying/randomcolor-cpp 
 
 ### Demos and sources:  
